@@ -94,13 +94,26 @@ function App() {
               </p>
               
               <div className="flex flex-col items-center gap-3 pt-4">
-                <button 
-                  onClick={() => startTest({ id: 'otestuj', title: 'Mini CERMAT Test' })}
-                  className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 transition-all hover:scale-105 flex items-center gap-2"
-                >
-                  <Clock size={24} />
-                  Spustit simulaci testu (25 min)
-                </button>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <button 
+                    onClick={() => startTest({ id: 'otestuj', title: 'Mini CERMAT Test' })}
+                    className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 transition-all hover:scale-105 flex items-center gap-2"
+                  >
+                    <Clock size={24} />
+                    Spustit simulaci testu (25 min)
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveGrade(activeGrade === 7 ? 9 : 7)}
+                    className={`px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all hover:scale-105 flex items-center gap-2 border ${
+                      activeGrade === 7 
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-emerald-600/20 hover:bg-emerald-700' 
+                        : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-500 hover:text-emerald-600'
+                    }`}
+                  >
+                    {activeGrade === 7 ? 'Zpět na 9. třídu' : 'Pro 7. třídy'}
+                  </button>
+                </div>
                 
                 <button 
                   onClick={refreshTasks}
@@ -113,7 +126,7 @@ function App() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {topics.map((topic) => (
+              {filteredTopics.map((topic) => (
                 <button
                   key={topic.id}
                   onClick={() => startPractice(topic)}
