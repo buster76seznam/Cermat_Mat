@@ -1,6 +1,9 @@
 import { generateFractionProblem } from './generators/fractions';
 import { generateEquationProblem } from './generators/equations';
 import { generateWordProblem } from './generators/word-problems';
+import { generateGeometryProblem } from './generators/geometry';
+import { generatePercentProblem } from './generators/percentages';
+import { generateExpressionProblem } from './generators/expressions';
 import { randomElement } from './math-helpers';
 
 // Hlavní rozcestník pro generování úloh
@@ -9,22 +12,20 @@ export const generateProblem = (topicId) => {
     case 'zlomky':
       return generateFractionProblem(3); // Hard mode
     case 'rovnice':
+      // Občas přidáme slovní úlohu řešenou rovnicí (pokud padne v generateEquationProblem nebo zde)
+      // Pro teď necháme čistě rovnice, jak je definováno v equations.js
       return generateEquationProblem();
     case 'slovni':
       return generateWordProblem();
     case 'procenta':
-      // Placeholder - prozatím vrátí zlomek, než implementujeme procenta
-      // V reálu by tu byl generatePercentProblem()
-      return generateFractionProblem(2); 
+      return generatePercentProblem();
     case 'vyrazy':
-      // Placeholder
-      return generateEquationProblem(); 
+      return generateExpressionProblem();
     case 'geometrie':
-      // Placeholder
-      return generateFractionProblem(1);
+      return generateGeometryProblem();
     case 'minicermat':
       // Mix všeho
-      const types = ['zlomky', 'rovnice', 'slovni'];
+      const types = ['zlomky', 'rovnice', 'slovni', 'procenta', 'vyrazy', 'geometrie'];
       return generateProblem(randomElement(types));
     default:
       return generateFractionProblem(1);

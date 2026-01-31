@@ -1,4 +1,4 @@
-import { randomInt, simplifyFraction, toLatex } from '../math-helpers';
+import { randomInt, toLatex, simplifyFraction, randomElement } from '../math-helpers';
 
 // Helper: Generates a linear equation problem (standard type)
 const generateLinearEquation = (inputMode = false) => {
@@ -79,10 +79,62 @@ const generateProductEquation = () => {
   
   return {
     type: "rovnice",
-    question: `Řešte rovnici v R: \\[${eqTex}\\]`,
+    question: `Řešte rovnici (využijte roznásobení): \\[${eqTex}\\]`,
     correctAnswer: String(xVal),
     inputMode: 'text',
     explanation: `Roznásobte závorky (každý s každým). Členy s x^2 se odečtou. Dále řešíme jako lineární rovnici.`,
+  };
+};
+
+// Helper: Generates equation solvable by factoring (Vytýkání)
+const generateFactoringEquation = () => {
+  // Pattern: A(x+B) + C(x+B) = D
+  // Factors to: (A+C)(x+B) = D
+  // x+B = D / (A+C)
+  // x = D/(A+C) - B
+  
+  // Choose solution x
+  const xVal = randomInt(-5, 5);
+  
+  // Choose common factor part (x+B)
+  const B = randomInt(-5, 5);
+  
+  // Choose coefficients A and C
+  let A, C;
+  do {
+    A = randomInt(-5, 5);
+    C = randomInt(-5, 5);
+  } while (A + C === 0 || A === 0 || C === 0);
+  
+  // Calculate D
+  // D = (A+C) * (xVal + B)
+  const D = (A + C) * (xVal + B);
+  
+  // Format parts
+  // A(x+B)
+  const formatPart = (coeff, val) => {
+    const valStr = val === 0 ? "x" : (val > 0 ? `(x + ${val})` : `(x - ${Math.abs(val)})`);
+    if (coeff === 1) return valStr;
+    if (coeff === -1) return `-${valStr}`;
+    return `${coeff}${valStr}`;
+  };
+  
+  // Construct equation string: A(x+B) + C(x+B) = D
+  // Note: Handle signs correctly
+  const part1 = formatPart(A, B);
+  const part2 = formatPart(C, B);
+  
+  // If part2 starts with negative, use it directly, else add +
+  const part2Str = C < 0 ? part2 : `+ ${part2}`;
+  
+  const eqTex = `${part1} ${part2Str} = ${D}`;
+  
+  return {
+    type: "rovnice",
+    question: `Řešte rovnici (využijte vytýkání): \\[${eqTex}\\]`,
+    correctAnswer: String(xVal),
+    inputMode: 'text',
+    explanation: `Vytkněte společný výraz v závorce. Získáte (${A}+${C})(x${B>0?'+'+B:B}) = ${D}.`,
   };
 };
 
@@ -144,6 +196,44 @@ const generateSystemOfEquations = () => {
   };
 };
 
+// Helper: Simple word problems solvable by linear equation
+const generateWordEquation = () => {
+  const type = randomInt(0, 1); // 0 = Number, 1 = Age/Items
+  
+  if (type === 0) {
+    // Number problem
+    const x = randomInt(2, 20);
+    const mult = randomInt(2, 5);
+    const add = randomInt(1, 20);
+    const result = x * mult + add;
+    
+    return {
+      type: "rovnice",
+      question: `Myslím si číslo. Když ho vynásobím číslem ${mult} a k výsledku přičtu ${add}, dostanu ${result}. Které číslo si myslím?`,
+      correctAnswer: String(x),
+      inputMode: 'text',
+      explanation: `Sestavíme rovnici: ${mult}x + ${add} = ${result}. ${mult}x = ${result-add}. x = ${x}.`
+    };
+  } else {
+    // Partition problem (Age/Items)
+    // "Petr a Pavel mají dohromady N kuliček. Petr má o X více než Pavel."
+    // Pavel = x, Petr = x + diff
+    // 2x + diff = total
+    
+    const pavel = randomInt(5, 30);
+    const diff = randomInt(1, 10);
+    const total = 2 * pavel + diff;
+    
+    return {
+      type: "rovnice",
+      question: `Petr a Pavel mají dohromady ${total} kuliček. Petr má o ${diff} více než Pavel. Kolik kuliček má Pavel?`,
+      correctAnswer: String(pavel),
+      inputMode: 'text',
+      explanation: `Pavel má x, Petr má x + ${diff}. Rovnice: x + (x + ${diff}) = ${total}. 2x = ${total-diff}. x = ${pavel}.`
+    };
+  }
+};
+
 const generateEquationOptions = (xVal) => {
   const opts = new Set([`x = ${xVal}`]);
   while (opts.size < 4) {
@@ -159,21 +249,27 @@ const generateEquationOptions = (xVal) => {
 export const generateEquationProblem = () => {
   const rand = Math.random();
   
-  // 30% Standard linear equation (multiple choice)
+  // 20% Standard linear equation (multiple choice)
   // 15% Standard linear equation (text input)
-  // 20% Equation with product expansion (text input)
+  // 15% Equation with product expansion (text input)
   // 15% Equation with factoring (text input)
-  // 20% System of 2 equations (text input)
+  // 15% System of 2 equations (text input)
+  // 10% Word problem (text input)
+  // 10% Check solution (Ano/Ne)
   
-  if (rand < 0.3) {
+  if (rand < 0.2) {
     return generateLinearEquation(false); // Multiple choice
-  } else if (rand < 0.45) {
+  } else if (rand < 0.35) {
     return generateLinearEquation(true); // Text input
-  } else if (rand < 0.65) {
+  } else if (rand < 0.50) {
     return generateProductEquation();
-  } else if (rand < 0.8) {
+  } else if (rand < 0.65) {
     return generateFactoringEquation();
-  } else {
+  } else if (rand < 0.80) {
     return generateSystemOfEquations();
+  } else if (rand < 0.90) {
+    return generateWordEquation();
+  } else {
+    return generateCheckSolution();
   }
 };
