@@ -170,39 +170,69 @@ const PracticeMode = ({ topic, onBack }) => {
                 <h2 className="text-2xl font-medium leading-relaxed text-center py-4">
                   <MathText text={currentProblem.question} block />
                 </h2>
-                <div className="grid grid-cols-1 gap-3 max-w-xl mx-auto">
-                  {currentProblem.options.map((opt, optIdx) => {
-                    let btnClass = "p-4 rounded-xl border-2 text-left transition-all relative flex items-center justify-between ";
-                    
-                    if (isCorrect !== null) {
-                       if (opt === currentProblem.correctAnswer) {
-                        btnClass += "border-green-500 bg-green-50 text-green-700";
-                      } else if (userAnswers['default'] === opt) {
-                        btnClass += "border-red-500 bg-red-50 text-red-700";
-                      } else {
-                        btnClass += "border-slate-100 opacity-50";
-                      }
-                    } else {
-                      if (userAnswers['default'] === opt) {
-                        btnClass += "border-primary bg-primary/5 text-primary ring-1 ring-primary";
-                      } else {
-                        btnClass += "border-slate-100 hover:border-slate-300 hover:bg-slate-50";
-                      }
-                    }
-
-                    return (
-                      <button
-                        key={optIdx}
-                        onClick={() => handleAnswer('default', opt)}
+                <div className="max-w-xl mx-auto">
+                  {currentProblem.inputMode === 'text' ? (
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={userAnswers['default'] || ''}
+                        onChange={(e) => handleAnswer('default', e.target.value)}
                         disabled={isCorrect !== null}
-                        className={btnClass}
-                      >
-                        <span className="text-lg font-medium"><MathText text={opt} /></span>
-                        {isCorrect !== null && opt === currentProblem.correctAnswer && <CheckCircle2 className="text-green-600" size={24} />}
-                        {isCorrect !== null && userAnswers['default'] === opt && opt !== currentProblem.correctAnswer && <XCircle className="text-red-600" size={24} />}
-                      </button>
-                    );
-                  })}
+                        placeholder="Zadejte výsledek"
+                        className={`w-full p-4 rounded-xl border-2 text-lg outline-none transition-all ${
+                          isCorrect !== null
+                            ? userAnswers['default'] === currentProblem.correctAnswer
+                              ? "border-green-500 bg-green-50 text-green-700"
+                              : "border-red-500 bg-red-50 text-red-700"
+                            : "border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                        }`}
+                      />
+                      {isCorrect !== null && userAnswers['default'] === currentProblem.correctAnswer && (
+                        <CheckCircle2 className="absolute right-4 top-4 text-green-600" size={24} />
+                      )}
+                      {isCorrect !== null && userAnswers['default'] !== currentProblem.correctAnswer && (
+                        <div className="absolute right-4 top-4 flex items-center gap-2">
+                          <span className="text-sm font-medium text-slate-500">Správně: {currentProblem.correctAnswer}</span>
+                          <XCircle className="text-red-600" size={24} />
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-3">
+                      {currentProblem.options.map((opt, optIdx) => {
+                        let btnClass = "p-4 rounded-xl border-2 text-left transition-all relative flex items-center justify-between ";
+                        
+                        if (isCorrect !== null) {
+                           if (opt === currentProblem.correctAnswer) {
+                            btnClass += "border-green-500 bg-green-50 text-green-700";
+                          } else if (userAnswers['default'] === opt) {
+                            btnClass += "border-red-500 bg-red-50 text-red-700";
+                          } else {
+                            btnClass += "border-slate-100 opacity-50";
+                          }
+                        } else {
+                          if (userAnswers['default'] === opt) {
+                            btnClass += "border-primary bg-primary/5 text-primary ring-1 ring-primary";
+                          } else {
+                            btnClass += "border-slate-100 hover:border-slate-300 hover:bg-slate-50";
+                          }
+                        }
+    
+                        return (
+                          <button
+                            key={optIdx}
+                            onClick={() => handleAnswer('default', opt)}
+                            disabled={isCorrect !== null}
+                            className={btnClass}
+                          >
+                            <span className="text-lg font-medium"><MathText text={opt} /></span>
+                            {isCorrect !== null && opt === currentProblem.correctAnswer && <CheckCircle2 className="text-green-600" size={24} />}
+                            {isCorrect !== null && userAnswers['default'] === opt && opt !== currentProblem.correctAnswer && <XCircle className="text-red-600" size={24} />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
