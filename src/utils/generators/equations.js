@@ -159,17 +159,20 @@ const generateEquationOptions = (xVal) => {
 export const generateEquationProblem = () => {
   const rand = Math.random();
   
-  // 40% Standard linear equation (multiple choice)
-  // 20% Standard linear equation (text input)
-  // 20% Equation with product/factoring (text input)
+  // 30% Standard linear equation (multiple choice)
+  // 15% Standard linear equation (text input)
+  // 20% Equation with product expansion (text input)
+  // 15% Equation with factoring (text input)
   // 20% System of 2 equations (text input)
   
-  if (rand < 0.4) {
+  if (rand < 0.3) {
     return generateLinearEquation(false); // Multiple choice
-  } else if (rand < 0.6) {
+  } else if (rand < 0.45) {
     return generateLinearEquation(true); // Text input
-  } else if (rand < 0.8) {
+  } else if (rand < 0.65) {
     return generateProductEquation();
+  } else if (rand < 0.8) {
+    return generateFactoringEquation();
   } else {
     return generateSystemOfEquations();
   }
