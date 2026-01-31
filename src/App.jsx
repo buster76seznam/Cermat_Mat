@@ -28,6 +28,11 @@ function App() {
   const [currentView, setCurrentView] = useState('menu'); // menu, practice, test, theory
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0); // Pro vynucení přegenerování
+  const [activeGrade, setActiveGrade] = useState(9); // 9 or 7
+
+  const filteredTopics = activeGrade === 7 
+    ? topics.filter(t => ['zlomky', 'procenta', 'geometrie', 'slovni'].includes(t.id))
+    : topics;
 
   const startPractice = (topic) => {
     setSelectedTopic(topic);
