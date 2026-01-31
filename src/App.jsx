@@ -59,12 +59,17 @@ function App() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <button onClick={goHome} className="flex items-center gap-2 font-bold text-xl text-primary hover:opacity-80 transition-opacity">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between relative">
+          <button onClick={goHome} className="flex items-center gap-2 font-bold text-xl text-primary hover:opacity-80 transition-opacity z-10">
             <div className="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center font-serif">C</div>
             CERMAT Procvičování
           </button>
-          <div className="flex gap-4">
+          
+          <div className="absolute left-1/2 transform -translate-x-1/2 font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600 tracking-tight hidden md:block">
+            BezChyby!
+          </div>
+
+          <div className="flex gap-4 z-10">
             <button onClick={startTheory} className="text-sm font-medium text-slate-600 hover:text-primary transition-colors">
               Teorie
             </button>
