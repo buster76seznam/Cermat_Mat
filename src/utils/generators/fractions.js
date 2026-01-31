@@ -30,13 +30,14 @@ export const generateFractionProblem = (difficulty = 1) => {
     resDen = d1 * d2;
     
     const simplified = simplifyFraction(resNum, resDen);
-    const correct = toLatex(simplified.num, simplified.den);
+    // Pokud je zlomek nepravý, převedeme na smíšené číslo
+    const correct = toLatex(simplified.num, simplified.den, true);
     
     return {
       type: "zlomky",
       question: `Vypočítejte: \\(${problemTex}\\)`,
       correctAnswer: correct,
-      explanation: `Převedeme na společného jmenovatele a sečteme/odečteme čitatele.`,
+      explanation: `Převedeme na společného jmenovatele a sečteme/odečteme čitatele. Výsledek uvedeme v základním tvaru, popř. ve tvaru smíšeného čísla.`,
       options: generateOptions(simplified.num, simplified.den)
     };
   } else if (type === 2) {
@@ -59,13 +60,13 @@ export const generateFractionProblem = (difficulty = 1) => {
     const finalDen = subDen * d3;
     
     const simplified = simplifyFraction(finalNum, finalDen);
-    const correct = toLatex(simplified.num, simplified.den);
+    const correct = toLatex(simplified.num, simplified.den, true);
     
     return {
       type: "zlomky",
       question: `Vypočítejte: \\(${problemTex}\\)`,
       correctAnswer: correct,
-      explanation: "Nejdříve vypočítáme závorku (převedením na společného jmenovatele) a výsledek vynásobíme.",
+      explanation: "Nejdříve vypočítáme závorku (převedením na společného jmenovatele) a výsledek vynásobíme. Výsledek uvedeme v základním tvaru, popř. ve tvaru smíšeného čísla.",
       options: generateOptions(simplified.num, simplified.den)
     };
   } else {
@@ -94,35 +95,39 @@ export const generateFractionProblem = (difficulty = 1) => {
     const finalDen = d1 * denNum;
     
     const simplified = simplifyFraction(finalNum, finalDen);
-    const correct = toLatex(simplified.num, simplified.den);
+    const correct = toLatex(simplified.num, simplified.den, true);
     
     return {
       type: "zlomky",
       question: `Vypočítejte: \\(${problemTex}\\)`,
       correctAnswer: correct,
-      explanation: "Vypočítáme jmenovatele hlavního zlomku a poté provedeme dělení (násobení převrácenou hodnotou).",
+      explanation: "Vypočítáme jmenovatele hlavního zlomku a poté provedeme dělení (násobení převrácenou hodnotou). Výsledek uvedeme v základním tvaru, popř. ve tvaru smíšeného čísla.",
       options: generateOptions(simplified.num, simplified.den)
     };
   }
 };
 
 const generateOptions = (num, den) => {
-  const correct = toLatex(num, den);
+  // Pro správnou odpověď použijeme smíšené číslo, pokud to jde
+  const correct = toLatex(num, den, true);
   const options = new Set([correct]);
   
   while (options.size < 4) {
     // Generování falešných odpovědí
+    // Občas dáme i jinou formu (např. nepravý zlomek vs smíšené číslo) jako distractor?
+    // Ne, chceme konzistentní formát, takže i distractory budou smíšená čísla
+    
     // Chyba znaménka
-    if (Math.random() > 0.5) options.add(toLatex(-num, den));
+    if (Math.random() > 0.5) options.add(toLatex(-num, den, true));
     // Převrácená hodnota
-    if (Math.random() > 0.5 && num !== 0) options.add(toLatex(den, num));
+    if (Math.random() > 0.5 && num !== 0) options.add(toLatex(den, num, true));
     // Chyba v čitateli
-    options.add(toLatex(num + randomInt(-2, 2), den));
+    options.add(toLatex(num + randomInt(-2, 2), den, true));
     // Chyba ve jmenovateli
-    options.add(toLatex(num, den + randomInt(-2, 2)));
+    options.add(toLatex(num, den + randomInt(-2, 2), true));
     
     // Random nesmysl
-    options.add(toLatex(randomInt(1, 10), randomInt(2, 10)));
+    options.add(toLatex(randomInt(1, 10), randomInt(2, 10), true));
   }
   
   // Převést Set na pole a zamíchat

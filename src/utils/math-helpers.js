@@ -32,8 +32,19 @@ export const randomElement = (arr) => {
 };
 
 // Formátování zlomku do LaTeXu
-export const toLatex = (num, den) => {
+// mixed = true: převede nepravý zlomek na smíšené číslo (např. 8/3 -> 2 2/3)
+export const toLatex = (num, den, mixed = false) => {
   if (den === 1) return `${num}`;
   if (num === 0) return "0";
+  
+  if (mixed && Math.abs(num) > Math.abs(den)) {
+    const whole = Math.floor(Math.abs(num) / Math.abs(den));
+    const rem = Math.abs(num) % Math.abs(den);
+    const sign = num < 0 ? "-" : "";
+    
+    if (rem === 0) return `${sign}${whole}`;
+    return `${sign}${whole}\\frac{${rem}}{${den}}`; // LaTeX zápis pro smíšené číslo: 2\frac{2}{3}
+  }
+
   return `\\frac{${num}}{${den}}`;
 };
